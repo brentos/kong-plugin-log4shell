@@ -53,7 +53,19 @@ for _, strategy in helpers.all_strategies() do
 
     describe("request", function()
 
-      it("Checks for ejndi lookups", function()
+      it("Normal requests go through fine", function()
+        local r = client:get("/request", {
+          headers = {
+            host = "test1.com",
+            ['User-agent'] = {"my-user-agent","my-other-user-agent"}
+          }
+        })
+        -- validate that the request succeeded, response status 200
+        assert.response(r).has.status(200)
+
+      end)
+
+      it("Checks for jndi lookups", function()
         local r = client:get("/request", {
           headers = {
             host = "test1.com",
