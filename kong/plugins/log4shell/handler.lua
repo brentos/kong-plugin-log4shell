@@ -1,5 +1,4 @@
 local kong = kong
-local ngx = ngx
 
 local plugin = {
   PRIORITY = 3000, -- set the plugin priority, which determines plugin execution order
@@ -12,10 +11,9 @@ local function check_header_value(k,v)
     s=string.gsub(s, "${upper:(%a+)}", "%1")
     s=string.gsub(s, "${env:[%a_-]+:%-([%a:])}", "%1")
     s=string.gsub(s, "${::%-(%a+)}", "%1")
-    kong.log.debug(s)
     if string.match(string.lower(s), "{jndi:") then
-      ngx.log(ngx.ERR, 'Found potential log4j attack in header ' .. k .. ':' .. tostring(v))
-      ngx.exit(ngx.HTTP_FORBIDDEN)
+      kong.log.err('Found potential log4j attack in header ' .. k .. ':' .. tostring(v))
+      return kong.response.exit(403, "Forbidden")
     end
 end
 
