@@ -2,7 +2,7 @@ local kong = kong
 local ngx = ngx
 
 local plugin = {
-  PRIORITY = 1000, -- set the plugin priority, which determines plugin execution order
+  PRIORITY = 3000, -- set the plugin priority, which determines plugin execution order
   VERSION = "0.1",
 }
 
