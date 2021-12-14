@@ -9,7 +9,6 @@ local schema = {
     -- the 'fields' array is the top-level entry with fields defined by Kong
     { protocols = typedefs.protocols_http },
     { config = {
-        -- The 'config' record is the custom part of the plugin schema
         type = "record",
         fields = {},
       },

@@ -33,8 +33,6 @@ function plugin:access(plugin_conf)
         for _,v in ipairs(v) do
           check_header_value(k, v)
         end
-        else
-          -- Error
       end
     end
   end

